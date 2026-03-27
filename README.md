@@ -113,64 +113,6 @@ http://localhost:3000
 
 Routes de l'application
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 MéthodeRouteDescriptionAccèsGET/Page de connexion MFAPublicGET/accueilTableau de bord utilisateurProtégéGET/blogPage des articlesProtégéGET/logsJournal d'audit des connexionsProtégéGET/logoutDéconnexion de l'utilisateurProtégéPOST/loginAuthentification étape 1PublicPOST/verify-emailVérification du code emailPublicPOST/verify-totpVérification du code TOTPPublic
 
 Fonctionnement de l'authentification
