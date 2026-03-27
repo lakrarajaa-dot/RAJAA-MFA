@@ -1,99 +1,147 @@
-# 🔐 Triple MFA Auth — Guide de démarrage
+# Smart Application - Système d'Authentification Multi-Facteurs (MFA)
 
-## Structure du projet
+Une application web moderne avec authentification renforcée en 3 étapes (Email + Mot de passe → Code par email → Code TOTP via Google Authenticator).
 
-```
-mfa-project/
-├── server.js                  ← Point d'entrée, configuration Express + session
-├── package.json               ← Dépendances et scripts npm
-│
-├── routes/
-│   ├── auth.js                ← Logique MFA : login, verify-email, verify-totp, logout
-│   └── home.js                ← Pages protégées : accueil, blog, logs, actions
-│
-├── middleware/
-│   ├── logger.js              ← Journalisation des actions dans logs/actions.log
-│   └── requireAuth.js         ← Garde-route : vérifie que la session est complète
-│
+## 🚀 Présentation
+
+Smart Application est une plateforme sécurisée implémentant un système **Multi-Factor Authentication (MFA)** complet avec :
+
+- Authentification classique (email + mot de passe)
+- Vérification par code envoyé par email
+- Authentification TOTP (Google Authenticator, Microsoft Authenticator, etc.)
+- Interface moderne avec arrière-plan animé
+- Journal d'audit des connexions complet
+
+## ✨ Fonctionnalités
+
+- Authentification en 3 étapes (MFA)
+- Configuration automatique du TOTP (QR Code + clé secrète)
+- Journal d'audit détaillé des connexions
+- Interface utilisateur moderne et responsive
+- Arrière-plan animé sur toutes les pages
+- Système de sessions sécurisé
+- Export des logs en CSV
+
+## Prérequis
+
+Avant de commencer, assurez-vous d'avoir installé :
+
+- **Node.js** (version 18 ou supérieure)
+- **npm** (inclus avec Node.js)
+- Un éditeur de code (VS Code recommandé)
+
+### Dépendances requises
+
+```bash
+express
+express-session
+bcrypt
+nodemailer
+speakeasy
+qrcode
+dotenv
+Installation
+1. Cloner le projet
+Bashgit clone https://github.com/votre-utilisateur/smart-application.git
+cd smart-application
+2. Installer les dépendances
+Bashnpm install
+3. Structure du projet
+textsmart-application/
 ├── public/
-│   ├── index.html             ← Page de connexion (formulaire 3 étapes)
-│   ├── accueil.html           ← Page d'accueil (après authentification)
-│   ├── blog.html              ← Page blog (protégée)
-│   └── logs.html              ← Visualisation des logs (protégée)
-│
-└── logs/
-    └── actions.log            ← Journal des actions (auto-généré)
-```
+│   ├── index.html
+│   ├── accueil.html
+│   ├── blog.html
+│   └── logs.html
+├── routes/
+│   ├── auth.js
+│   └── home.js
+├── middleware/
+│   └── logger.js
+├── .env
+├── server.js
+├── package.json
+└── README.md
+Configuration
+1. Créer le fichier .env
+À la racine du projet, créez un fichier .env avec le contenu suivant :
+env# Configuration serveur
+PORT=3000
 
-## 🚀 Installation & Lancement
+# Session
+SESSION_SECRET=super_secret_key_changez_moi_en_production
 
-```bash
-# 1. Démarrer le serveur
-npm run dev
+# Configuration Email (SMTP)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=votre.email@gmail.com
+EMAIL_PASS=votre_mot_de_passe_application
 
-# 3. Ouvrir dans le navigateur
-# http://localhost:3000
-```
+# Base de données (optionnel pour l'instant)
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASS=
+Important : Pour Gmail, utilisez un mot de passe d'application (pas votre mot de passe normal).
+2. Configuration de la session
+Dans server.js, assurez-vous que la clé secrète est bien définie (elle sera automatiquement prise depuis .env si vous l'améliorez).
+Lancement de l'application
+Mode développement
+Bashnode server.js
+Ou avec nodemon (recommandé) :
+Bashnpm install -g nodemon
+nodemon server.js
+L'application sera accessible à l'adresse :
+→ http://localhost:3000
+Routes Principales
 
-## 🧪 Compte de test
 
-| Champ        | Valeur              |
-|-------------|---------------------|
-| Email        | alice@exemple.com   |
-| Mot de passe | MotDePasse123       |
-| Code email   | Affiché dans la console du serveur |
-| Code SMS     | Affiché dans la console du serveur |
 
-> En mode développement, les codes email/SMS s'affichent directement
-> dans la console au lieu d'être vraiment envoyés.
+RouteDescription/Page de connexion MFA/accueilTableau de bord après connexion/blogPage blog/logsJournal d'audit des connexions/logoutDéconnexion
+Tests
+Tester manuellement
 
-## 🔄 Flux d'authentification
+Accédez à http://localhost:3000
+Connectez-vous avec vos identifiants
+Vérifiez la réception du code par email
+Scannez le QR Code avec Google Authenticator
+Validez le code TOTP
+Vérifiez l'accès à la page d'accueil
+Consultez le journal des connexions sur /logs
 
-```
-POST /login          → Étape 1 : Vérif mot de passe + envoi code email
-POST /verify-email   → Étape 2 : Vérif code email + envoi code SMS
-POST /verify-sms     → Étape 3 : Vérif code SMS → session ouverte
-GET  /accueil        → Page d'accueil (protégée)
-POST /logout         → Destruction de la session
-```
+Tests automatisés (à venir)
+Vous pouvez ajouter des tests avec Jest ou Supertest dans un dossier tests/.
+Structure des Étapes d'Authentification
 
-## 📧 Activer les vrais emails (nodemailer)
+Étape 1 : Email + Mot de passe
+Étape 2 : Code de vérification envoyé par email
+Étape 3 : Code TOTP (Google Authenticator)
 
-Dans `routes/auth.js`, remplace la fonction `sendEmail` :
+Technologies Utilisées
 
-```js
-const Redis = require('ioredis');
-const redis = new Redis(process.env.REDIS_URL);
+Backend : Node.js + Express
+Sessions : express-session
+Authentification : Speakeasy (TOTP) + Nodemailer
+Frontend : HTML5, CSS3, Vanilla JavaScript
+Design : Interface moderne avec arrière-plan animé
+Icônes : Material Symbols
 
-// Stocker un code
-await redis.setex(`otp:${userId}:email`, 300, code); // expire en 300s
+Sécurité
 
-// Vérifier un code
-const stored = await redis.get(`otp:${userId}:email`);
-```
+Sessions sécurisées (httpOnly)
+Protection contre les attaques par force brute (à améliorer)
+Hashing des mots de passe (recommandé avec bcrypt)
+Journalisation complète des tentatives de connexion
 
-### 2. Activer les vrais SMS (Twilio)
+Améliorations futures
 
-```bash
-npm install twilio
-```
+Ajout d'une vraie base de données (MongoDB / PostgreSQL)
+Système de rôles (Admin / Utilisateur)
+Protection CSRF
+Rate limiting
+Mode sombre
+Responsive avancé
 
-```js
-const twilio = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
-async function sendSMS(phone, message) {
-  await twilio.messages.create({
-    body: message,
-    from: process.env.TWILIO_PHONE,
-    to: phone
-  });
-}
-```
-
-## 🗄️ Passer à une vraie base de données
-
-Remplace le tableau `USERS` dans `routes/auth.js` par des appels
-à ta base de données (MongoDB, PostgreSQL, MySQL...).
-
-Pour les codes temporaires, utilise **Redis** avec un TTL de 5 minutes
-à la place de l'objet `tempCodes` en mémoire.
+Auteur : RAJAA
+Version : 1.0.0
+Date : Mars 2026
