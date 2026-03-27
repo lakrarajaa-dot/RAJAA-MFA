@@ -1,147 +1,250 @@
-# Smart Application - Système d'Authentification Multi-Facteurs (MFA)
+# Smart Application - Documentation Technique
 
-Une application web moderne avec authentification renforcée en 3 étapes (Email + Mot de passe → Code par email → Code TOTP via Google Authenticator).
+**Système d'Authentification Multi-Facteurs (MFA) en 3 étapes**
 
-## 🚀 Présentation
+---
 
-Smart Application est une plateforme sécurisée implémentant un système **Multi-Factor Authentication (MFA)** complet avec :
+## 📋 Table des matières
 
-- Authentification classique (email + mot de passe)
-- Vérification par code envoyé par email
-- Authentification TOTP (Google Authenticator, Microsoft Authenticator, etc.)
-- Interface moderne avec arrière-plan animé
-- Journal d'audit des connexions complet
+1. [Introduction](#introduction)
+2. [Prérequis](#prérequis)
+3. [Installation](#installation)
+4. [Configuration](#configuration)
+5. [Structure du projet](#structure-du-projet)
+6. [Lancement de l'application](#lancement-de-lapplication)
+7. [Routes de l'application](#routes-de-lapplication)
+8. [Fonctionnement de l'authentification](#fonctionnement-de-lauthentification)
+9. [Tests](#tests)
+10. [Sécurité](#sécurité)
+11. [Améliorations futures](#améliorations-futures)
 
-## ✨ Fonctionnalités
+---
 
-- Authentification en 3 étapes (MFA)
-- Configuration automatique du TOTP (QR Code + clé secrète)
-- Journal d'audit détaillé des connexions
-- Interface utilisateur moderne et responsive
-- Arrière-plan animé sur toutes les pages
-- Système de sessions sécurisé
-- Export des logs en CSV
+## Introduction
+
+**Smart Application** est une plateforme web moderne implémentant un système d'authentification multi-facteurs (MFA) complet en trois étapes :
+
+- **Étape 1** : Authentification classique (Email + Mot de passe)
+- **Étape 2** : Vérification par code envoyé par email
+- **Étape 3** : Authentification TOTP (Google Authenticator / Microsoft Authenticator)
+
+L'application inclut également :
+- Un journal d'audit complet des connexions
+- Une interface utilisateur moderne avec arrière-plan animé
+- Un design responsive et professionnel
+
+---
 
 ## Prérequis
 
-Avant de commencer, assurez-vous d'avoir installé :
+### Logiciels nécessaires
 
-- **Node.js** (version 18 ou supérieure)
+- **Node.js** ≥ 18
 - **npm** (inclus avec Node.js)
-- Un éditeur de code (VS Code recommandé)
+- Un navigateur moderne (Chrome, Firefox, Edge)
 
-### Dépendances requises
+### Dépendances principales
+
+| Dépendance            | Utilisation                          |
+|-----------------------|--------------------------------------|
+| `express`             | Framework web                        |
+| `express-session`     | Gestion des sessions                 |
+| `nodemailer`          | Envoi des codes par email            |
+| `speakeasy`           | Génération et vérification TOTP      |
+| `qrcode`              | Génération du QR Code                |
+| `dotenv`              | Gestion des variables d'environnement |
+
+---
+
+## Installation
+
+### 1. Cloner le dépôt
 
 ```bash
-express
-express-session
-bcrypt
-nodemailer
-speakeasy
-qrcode
-dotenv
-Installation
-1. Cloner le projet
-Bashgit clone https://github.com/votre-utilisateur/smart-application.git
+git clone <url-de-votre-repo>
 cd smart-application
+
+
 2. Installer les dépendances
 Bashnpm install
-3. Structure du projet
-textsmart-application/
-├── public/
-│   ├── index.html
-│   ├── accueil.html
-│   ├── blog.html
-│   └── logs.html
-├── routes/
-│   ├── auth.js
-│   └── home.js
-├── middleware/
-│   └── logger.js
-├── .env
-├── server.js
-├── package.json
-└── README.md
-Configuration
-1. Créer le fichier .env
-À la racine du projet, créez un fichier .env avec le contenu suivant :
-env# Configuration serveur
+3. Créer le fichier d'environnement
+Créez un fichier .env à la racine du projet :
+env# Port du serveur
 PORT=3000
 
-# Session
-SESSION_SECRET=super_secret_key_changez_moi_en_production
+# Clé secrète pour les sessions (à changer en production)
+SESSION_SECRET=super_secret_key_2026_changez_moi
 
 # Configuration Email (SMTP)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_USER=votre.email@gmail.com
-EMAIL_PASS=votre_mot_de_passe_application
+EMAIL_USER=votre_email@gmail.com
+EMAIL_PASS=votre_mot_de_passe_application_gmail
 
-# Base de données (optionnel pour l'instant)
-# DB_HOST=localhost
-# DB_USER=root
-# DB_PASS=
-Important : Pour Gmail, utilisez un mot de passe d'application (pas votre mot de passe normal).
-2. Configuration de la session
-Dans server.js, assurez-vous que la clé secrète est bien définie (elle sera automatiquement prise depuis .env si vous l'améliorez).
+# Mode développement / production
+NODE_ENV=development
+Note : Pour Gmail, utilisez un mot de passe d'application (App Password), pas votre mot de passe habituel.
+
+Structure du projet
+plaintextsmart-application/
+├── public/
+│   ├── index.html          # Page de connexion MFA
+│   ├── accueil.html        # Tableau de bord
+│   ├── blog.html           # Page Blog
+│   └── logs.html           # Journal des connexions
+├── routes/
+│   ├── auth.js             # Routes d'authentification
+│   └── home.js             # Routes des pages protégées
+├── middleware/
+│   └── logger.js           # Journalisation des actions
+├── .env                    # Variables d'environnement
+├── server.js               # Point d'entrée principal
+├── package.json
+└── README.md
+
 Lancement de l'application
-Mode développement
+En développement
 Bashnode server.js
 Ou avec nodemon (recommandé) :
 Bashnpm install -g nodemon
 nodemon server.js
-L'application sera accessible à l'adresse :
-→ http://localhost:3000
-Routes Principales
+L'application sera disponible à l'adresse :
+http://localhost:3000
+
+Routes de l'application
 
 
 
-RouteDescription/Page de connexion MFA/accueilTableau de bord après connexion/blogPage blog/logsJournal d'audit des connexions/logoutDéconnexion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MéthodeRouteDescriptionAccèsGET/Page de connexion MFAPublicGET/accueilTableau de bord utilisateurProtégéGET/blogPage des articlesProtégéGET/logsJournal d'audit des connexionsProtégéGET/logoutDéconnexion de l'utilisateurProtégéPOST/loginAuthentification étape 1PublicPOST/verify-emailVérification du code emailPublicPOST/verify-totpVérification du code TOTPPublic
+
+Fonctionnement de l'authentification
+L'authentification se déroule en 3 étapes distinctes :
+Étape 1 : Identifiants
+
+Saisie de l'email et du mot de passe
+Vérification des identifiants
+
+Étape 2 : Code par email
+
+Envoi d'un code à 6 chiffres par email
+Validation du code reçu
+
+Étape 3 : Code TOTP
+
+Affichage du QR Code pour configuration (première connexion)
+Saisie du code généré par l'application d'authentification (Google Authenticator, etc.)
+Validation finale et connexion réussie
+
+
 Tests
-Tester manuellement
+Tests manuels recommandés
 
-Accédez à http://localhost:3000
-Connectez-vous avec vos identifiants
-Vérifiez la réception du code par email
-Scannez le QR Code avec Google Authenticator
-Validez le code TOTP
-Vérifiez l'accès à la page d'accueil
-Consultez le journal des connexions sur /logs
+Test de connexion complète
+Accéder à /
+Saisir email + mot de passe
+Recevoir et valider le code email
+Scanner le QR Code et valider le code TOTP
+Vérifier l'accès à /accueil
 
-Tests automatisés (à venir)
-Vous pouvez ajouter des tests avec Jest ou Supertest dans un dossier tests/.
-Structure des Étapes d'Authentification
+Test du journal d'audit
+Se connecter
+Aller sur /logs
+Vérifier que toutes les étapes sont bien enregistrées
 
-Étape 1 : Email + Mot de passe
-Étape 2 : Code de vérification envoyé par email
-Étape 3 : Code TOTP (Google Authenticator)
+Test de déconnexion
+Cliquer sur "Déconnexion"
+Vérifier la redirection vers la page de login
 
-Technologies Utilisées
+Test de sécurité
+Tenter d'accéder à /accueil sans être connecté
+Vérifier que l'accès est refusé
 
-Backend : Node.js + Express
-Sessions : express-session
-Authentification : Speakeasy (TOTP) + Nodemailer
-Frontend : HTML5, CSS3, Vanilla JavaScript
-Design : Interface moderne avec arrière-plan animé
-Icônes : Material Symbols
+
 
 Sécurité
 
-Sessions sécurisées (httpOnly)
-Protection contre les attaques par force brute (à améliorer)
-Hashing des mots de passe (recommandé avec bcrypt)
+Utilisation de sessions sécurisées (httpOnly)
+Protection des mots de passe (recommandé : bcrypt)
 Journalisation complète des tentatives de connexion
+Codes TOTP à usage unique
+Arrière-plan animé moderne avec glassmorphism sur la carte de connexion
+
+Recommandations de sécurité :
+
+Toujours utiliser HTTPS en production
+Changer la clé secrète de session
+Implémenter un rate limiting
+Ajouter une protection CSRF
+
 
 Améliorations futures
 
-Ajout d'une vraie base de données (MongoDB / PostgreSQL)
-Système de rôles (Admin / Utilisateur)
-Protection CSRF
-Rate limiting
+Intégration d'une base de données (MongoDB / PostgreSQL)
+Système de gestion des utilisateurs (CRUD)
 Mode sombre
-Responsive avancé
+Notifications en temps réel
+Authentification biométrique
+Dashboard administrateur
+Tests automatisés (Jest + Supertest)
 
 
-Auteur : RAJAA
-Version : 1.0.0
-Date : Mars 2026
+Auteur
+RAJAA
+Projet MFA - Smart Application
+Mars 2026
