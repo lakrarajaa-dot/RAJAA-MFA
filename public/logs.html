@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logs - Historique de Connexion</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #334155;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #667eea;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-back {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    /* ── Main Content ── */
+    main {
+      padding: 40px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logs-header {
+      margin-bottom: 32px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    .logs-header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logs-header p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    /* ── Filters ── */
+    .filters {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 8px 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #f1f5f9;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .btn-filter {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-filter:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .btn-filter.reset {
+      background: #64748b;
+    }
+
+    .btn-filter.reset:hover {
+      background: #475569;
+    }
+
+    .btn-filter.export {
+      background: #16a34a;
+    }
+
+    .btn-filter.export:hover {
+      background: #15803d;
+    }
+
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    /* ── Table ── */
+    .table-container {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid #334155;
+      border-radius: 12px;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out 0.1s both;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #1e293b;
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #cbd5e1;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #334155;
+      color: #cbd5e1;
+    }
+
+    tr:hover td {
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .timestamp {
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .etape {
+      font-weight: 600;
+      color: #93c5fd;
+    }
+
+    .status-success {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-fail {
+      display: inline-block;
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-info {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 32px;
+      color: #64748b;
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 16px;
+      }
+
+      .header-content {
+        gap: 16px;
+      }
+
+      main {
+        padding: 24px 16px;
+      }
+
+      .logs-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+
+      .filter-actions {
+        flex-direction: column;
+      }
+
+      .btn-filter {
+        width: 100%;
+      }
+
+      table {
+        font-size: 0.8rem;
+      }
+
+      td, th {
+        padding: 10px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <a class="logo" onclick="window.location.href='/accueil'"> Logs</a>
+    <button class="btn-back" onclick="window.location.href='/accueil'">← Retour</button>
+  </div>
+</header>
+
+<main>
+  <div class="logs-header">
+    <h1>Journal des Connexions</h1>
+    <p>Historique détaillé de toutes les étapes de vos authentifications</p>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <div class="filter-group">
+      <label>Filtrer par étape</label>
+      <select id="filterEtape">
+        <option value="">Tous</option>
+        <option value="STEP1">1️⃣ Mot de passe</option>
+        <option value="STEP2">2️⃣ Email</option>
+        <option value="STEP3">3️⃣ TOTP</option>
+        <option value="LOGIN_SUCCESS">✅ Connexion</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Filtrer par statut</label>
+      <select id="filterStatus">
+        <option value="">Tous</option>
+        <option value="success">✅ Succès</option>
+        <option value="fail">❌ Échec</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Nombre de lignes</label>
+      <select id="filterLimit">
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="">Tous</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn-filter" onclick="applyFilters()"> Filtrer</button>
+      <button class="btn-filter reset" onclick="resetFilters()">↻ Réinitialiser</button>
+      <button class="btn-filter export" onclick="exportLogs()">⬇ Exporter CSV</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-value" id="totalLogs">-</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="successCount">-</div>
+      <div class="stat-label">Succès</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="failCount">-</div>
+      <div class="stat-label">Échecs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="todayCount">-</div>
+      <div class="stat-label">Aujourd'hui</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <table id="logsTable">
+      <thead>
+        <tr>
+          <th> Horodatage</th>
+          <th> Étape</th>
+          <th> Statut</th>
+          <th> Détails</th>
+          <th>🌐 IP</th>
+        </tr>
+      </thead>
+      <tbody id="logsBody">
+        <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 40px;">Chargement…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  let allLogs = [];
+
+  // Charge les logs au démarrage
+  async function loadAllLogs() {
+    try {
+      const res = await fetch('/api/logs');
+      allLogs = await res.json();
+      updateStats();
+      displayLogs(allLogs);
+    } catch (error) {
+      console.error('Erreur lors du chargement des logs:', error);
+      document.getElementById('logsBody').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ef4444;">Erreur lors du chargement des logs</td></tr>';
+    }
+  }
+
+  function updateStats() {
+    const total = allLogs.length;
+    const success = allLogs.filter(l => l.action.includes('OK') || l.action.includes('SUCCESS')).length;
+    const fail = allLogs.filter(l => l.action.includes('FAIL')).length;
+    
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const today_count = allLogs.filter(l => new Date(l.timestamp) >= todayStart).length;
+
+    document.getElementById('totalLogs').textContent = total;
+    document.getElementById('successCount').textContent = success;
+    document.getElementById('failCount').textContent = fail;
+    document.getElementById('todayCount').textContent = today_count;
+  }
+
+  function applyFilters() {
+    const etape = document.getElementById('filterEtape').value;
+    const status = document.getElementById('filterStatus').value;
+    const limit = document.getElementById('filterLimit').value;
+
+    let filtered = allLogs;
+
+    if (etape) {
+      filtered = filtered.filter(l => l.action.includes(etape));
+    }
+
+    if (status === 'success') {
+      filtered = filtered.filter(l => l.action.includes('OK') || l.action.includes('SUCCESS'));
+    } else if (status === 'fail') {
+      filtered = filtered.filter(l => l.action.includes('FAIL'));
+    }
+
+    if (limit) {
+      filtered = filtered.slice(0, parseInt(limit));
+    }
+
+    displayLogs(filtered);
+  }
+
+  function resetFilters() {
+    document.getElementById('filterEtape').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterLimit').value = '20';
+    displayLogs(allLogs.slice(0, 20));
+  }
+
+  function displayLogs(logs) {
+    const body = document.getElementById('logsBody');
+
+    if (!logs.length) {
+      body.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 40px;">Aucun log trouvé.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = logs.map(l => {
+      const timestamp = new Date(l.timestamp).toLocaleString('fr-FR');
+      const etape = getEtapeLabel(l.action);
+      const statusBadge = getStatusBadge(l.action);
+      const details = getDetails(l.action);
+      const ip = l.ip || 'N/A';
+
+      return `
+        <tr>
+          <td class="timestamp">${timestamp}</td>
+          <td class="etape">${etape}</td>
+          <td>${statusBadge}</td>
+          <td>${details}</td>
+          <td>${ip}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function getEtapeLabel(action) {
+    if (action.includes('STEP1')) return '1️⃣ Mot de passe';
+    if (action.includes('STEP2')) return '2️⃣ Email';
+    if (action.includes('STEP3')) return '3️⃣ TOTP';
+    if (action.includes('LOGIN_SUCCESS')) return '✅ Connexion';
+    if (action.includes('LOGOUT')) return '🚪 Déconnexion';
+    return action;
+  }
+
+  function getStatusBadge(action) {
+    if (action.includes('FAIL')) {
+      return `<span class="status-fail">❌ ÉCHEC</span>`;
+    } else if (action.includes('OK') || action.includes('SUCCESS')) {
+      return `<span class="status-success">✅ SUCCÈS</span>`;
+    }
+    return `<span class="status-info">ℹ️ INFO</span>`;
+  }
+
+  function getDetails(action) {
+    if (action.includes('STEP1_FAIL')) return 'Identifiants invalides';
+    if (action.includes('STEP1_OK')) return 'Code email envoyé';
+    if (action.includes('STEP2_FAIL')) return 'Code email incorrect/expiré';
+    if (action.includes('STEP2_OK')) return 'QR code généré';
+    if (action.includes('STEP3_FAIL')) return 'Code TOTP incorrect';
+    if (action.includes('LOGIN_SUCCESS')) return 'Authentification complétée';
+    if (action.includes('LOGOUT')) return 'Utilisateur déconnecté';
+    return '---';
+  }
+
+  function exportLogs() {
+    if (!allLogs.length) {
+      alert('Aucun log à exporter');
+      return;
+    }
+
+    let csv = 'Horodatage,Étape,Statut,Détails,IP\n';
+    allLogs.forEach(l => {
+      const timestamp = new Date(l.timestamp).toLocaleString('fr-FR');
+      const etape = getEtapeLabel(l.action).replace(/^[0-9️⃣✅🚪]+\s/, '');
+      const status = l.action.includes('FAIL') ? 'ÉCHEC' : (l.action.includes('OK') || l.action.includes('SUCCESS') ? 'SUCCÈS' : 'INFO');
+      const details = getDetails(l.action);
+      const ip = l.ip || 'N/A';
+      csv += `"${timestamp}","${etape}","${status}","${details}","${ip}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `logs_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Charge les logs au démarrage
+  loadAllLogs();
+</script>
+</body>
+</html>

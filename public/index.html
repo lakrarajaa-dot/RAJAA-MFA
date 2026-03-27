@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion - Authentification Sécurisée</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 48px 40px 32px;
+      text-align: center;
+      color: white;
+    }
+
+    .card-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-header p {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .card-body {
+      padding: 40px;
+    }
+
+    /* Progress Indicator */
+    .progress {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+
+    .progress-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: all 0.4s ease;
+      cursor: default;
+    }
+
+    .progress-dot.active {
+      background: #667eea;
+      width: 24px;
+      border-radius: 3px;
+    }
+
+    .progress-dot.completed {
+      background: #48bb78;
+    }
+
+    /* Form Sections */
+    .form-section {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title-step {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #f9fafb;
+      color: #1a202c;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input::placeholder {
+      color: #a0aec0;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      background: white;
+    }
+
+    /* Alert Messages */
+    .alert {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: none;
+      border-left: 4px solid;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert.error {
+      background: #ffe5e5;
+      color: #c81e1e;
+      border-left-color: #e74c3c;
+    }
+
+    .alert.info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border-left-color: #667eea;
+    }
+
+    /* QR Code Section */
+    .qr-section {
+      text-align: center;
+      margin: 28px 0;
+      padding: 24px 0;
+    }
+
+    .qr-section img {
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+      border: 2px solid #e0e0e0;
+      padding: 8px;
+      background: #f9fafb;
+      transition: transform 0.3s ease;
+    }
+
+    .qr-section img:hover {
+      transform: scale(1.02);
+    }
+
+    .qr-label {
+      font-size: 12px;
+      color: #718096;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .secret-key {
+      background: #f9fafb;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      color: #1a202c;
+      word-break: break-all;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .secret-key:hover {
+      background: #f0f0f0;
+      border-color: #667eea;
+    }
+
+    /* Button */
+    button {
+      width: 100%;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 8px;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+
+    button:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Footer */
+    .card-footer {
+      padding: 0 40px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #718096;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      .card-header {
+        padding: 32px 24px 24px;
+      }
+
+      .card-header h1 {
+        font-size: 24px;
+      }
+
+      .card-body {
+        padding: 32px 24px;
+      }
+
+      .card-footer {
+        padding: 0 24px 20px;
+      }
+
+      .qr-section img {
+        width: 160px;
+        height: 160px;
+      }
+
+      button {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1>Authentification</h1>
+        <p>Sécurisez votre compte en 3 étapes</p>
+      </div>
+
+      <div class="card-body">
+        <!-- Progress Indicator -->
+        <div class="progress">
+          <div class="progress-dot active" id="dot1"></div>
+          <div class="progress-dot" id="dot2"></div>
+          <div class="progress-dot" id="dot3"></div>
+        </div>
+
+        <!-- Step 1: Login -->
+        <div class="form-section active" id="panel1">
+          <div class="section-title">
+            <span class="section-title-step">1</span>
+            Identifiants
+          </div>
+          <div id="errorMsg1" class="alert error"></div>
+          <form class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="votre@email.com" autocomplete="email" required>
+            <label>Mot de passe</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" onclick="submitLogin()">Continuer</button>
+          </form>
+        </div>
+
+        <!-- Step 2: Email Verification -->
+        <div class="form-section" id="panel2">
+          <div class="section-title">
+            <span class="section-title-step">2</span>
+            Vérification Email
+          </div>
+          <div id="infoMsg2" class="alert info"></div>
+          <div id="errorMsg2" class="alert error"></div>
+          <form class="form-group">
+            <label>Entrez le code à 6 chiffres</label>
+            <input type="text" id="codeEmail" placeholder="000000" maxlength="6" inputmode="numeric" required>
+            <button type="button" onclick="submitEmail()">Vérifier</button>
+          </form>
+        </div>
+
+        <!-- Step 3: TOTP Verification -->
+        <div class="form-section" id="panel3">
+          <div class="section-title">
+            <span class="section-title-step">3</span>
+            Authentificateur
+          </div>
+          <div id="errorMsg3" class="alert error"></div>
+          
+          <div class="qr-section" id="qrSection" style="display:none;">
+            <div class="qr-label">Scannez ce code QR</div>
+            <img id="qrCode" alt="QR Code">
+            <div class="qr-label" style="margin-top: 16px;">Ou entrez cette clé</div>
+            <div class="secret-key" id="secretKey"></div>
+          </div>
+
+          <form class="form-group">
+            <label>Code d'authentification</label>
+            <input type="text" id="codeTOTP" placeholder="000000" maxlength="6" inputmode="numeric" required>
+            <button type="button" onclick="submitTOTP()">Se connecter</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        Authentification Multi-Facteur Sécurisée
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showError(msg, step) {
+      const el = document.getElementById('errorMsg' + step);
+      el.textContent = msg || 'Une erreur est survenue';
+      el.style.display = 'block';
+      setTimeout(() => {
+        el.style.display = 'none';
+      }, 5000);
+    }
+
+    function showInfo(msg, step) {
+      const el = document.getElementById('infoMsg' + step);
+      el.textContent = msg || '';
+      el.style.display = 'block';
+    }
+
+    function goToStep(step) {
+      // Sections
+      document.querySelectorAll('.form-section').forEach((section, i) => {
+        section.classList.toggle('active', i + 1 === step);
+      });
+
+      // Progress dots
+      [1, 2, 3].forEach(i => {
+        const el = document.getElementById('dot' + i);
+        el.className = 'progress-dot';
+        if (i < step) el.classList.add('completed');
+        if (i === step) el.classList.add('active');
+      });
+    }
+
+    async function post(url, data) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      return res.json();
+    }
+
+    async function submitLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        return showError('Veuillez remplir tous les champs', 1);
+      }
+
+      const data = await post('/login', { email, password });
+      if (data.error) return showError(data.error, 1);
+      goToStep(2);
+      showInfo('Un code de vérification à 6 chiffres a été envoyé à votre email', 2);
+    }
+
+    async function submitEmail() {
+      const code = document.getElementById('codeEmail').value.trim();
+      if (code.length !== 6) {
+        return showError('Le code doit contenir 6 chiffres', 2);
+      }
+
+      const data = await post('/verify-email', { code });
+      if (data.error) return showError(data.error, 2);
+
+      if (data.qrCode) {
+        document.getElementById('qrCode').src = data.qrCode;
+        document.getElementById('secretKey').textContent = data.secret;
+        document.getElementById('qrSection').style.display = 'block';
+      }
+
+      goToStep(3);
+    }
+
+    async function submitTOTP() {
+      const code = document.getElementById('codeTOTP').value.trim();
+      if (code.length !== 6) {
+        return showError('Le code doit contenir 6 chiffres', 3);
+      }
+
+      const data = await post('/verify-totp', { code });
+      if (data.error) return showError(data.error, 3);
+      window.location.href = '/accueil';
+    }
+
+    // Allow Enter key on inputs
+    document.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        const activeSection = document.querySelector('.form-section.active');
+        if (activeSection.id === 'panel1') submitLogin();
+        if (activeSection.id === 'panel2') submitEmail();
+        if (activeSection.id === 'panel3') submitTOTP();
+      }
+    });
+  </script>
+</body>
+</html>
