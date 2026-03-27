@@ -1,6 +1,5 @@
-// ============================================================
+
 // routes/home.js — Page d'accueil et actions
-// ============================================================
 const express = require('express');
 const path    = require('path');
 const { log } = require('../middleware/logger');

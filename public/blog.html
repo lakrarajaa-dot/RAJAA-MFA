@@ -3,246 +3,257 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog - Actualités et Sécurité</title>
+  <title>Blog - Smart Application</title>
+  
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lien vers ton fichier CSS principal -->
+  <link rel="stylesheet" href="Style.css">
+  
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: #f1f5f9;
-      min-height: 100vh;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #fcf8f8;
+      color: #1c1b1b;
+      min-height: 100dvh;
     }
 
-    /* ── Header ── */
-    header {
-      background: rgba(30, 41, 59, 0.8);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #334155;
-      padding: 16px 32px;
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e2e1;
+      padding: 16px 40px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 101, 84, 0.08);
       position: sticky;
       top: 0;
       z-index: 100;
     }
-    
-    .header-content {
+
+    .logo {
       display: flex;
       align-items: center;
-      gap: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    
-    .logo {
+      gap: 10px;
       font-weight: 700;
-      font-size: 1.1rem;
-      color: #667eea;
-      text-decoration: none;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-    
-    .logo:hover {
-      color: #764ba2;
+      font-size: 1.55rem;
+      color: #006554;
     }
 
-    nav {
+    .nav-links {
       display: flex;
-      gap: 24px;
-      flex: 1;
+      gap: 32px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
-    nav a {
-      color: #94a3b8;
+    .nav-links a {
+      color: #6e7a75;
       text-decoration: none;
-      font-size: 0.9rem;
       font-weight: 500;
       transition: color 0.3s ease;
-      cursor: pointer;
     }
 
-    nav a:hover {
-      color: #667eea;
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #006554;
+      font-weight: 600;
     }
 
-    .btn-back {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .btn-logout {
+      background: linear-gradient(135deg, #ba1a1a, #93000a);
       color: white;
       border: none;
-      padding: 8px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
+      padding: 10px 24px;
+      border-radius: 12px;
       font-weight: 600;
+      cursor: pointer;
       transition: all 0.3s ease;
     }
 
-    .btn-back:hover {
+    .btn-logout:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 6px 18px rgba(186, 26, 26, 0.3);
     }
 
-    /* ── Main Content ── */
-    main {
-      padding: 60px 32px;
-      max-width: 1000px;
+    .container {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 30px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #006554;
+      margin-bottom: 12px;
+    }
+
+    .page-header p {
+      font-size: 1.15rem;
+      color: #6e7a75;
+      max-width: 600px;
       margin: 0 auto;
+    }
+
+    .search-bar {
+      max-width: 620px;
+      margin: 0 auto 50px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 16px 24px;
+      border: 1.5px solid #e5e2e1;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      background: #ffffff;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #006554;
+      box-shadow: 0 0 0 4px rgba(0, 101, 84, 0.12);
+    }
+
+    .blog-posts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .blog-post {
+      background: #ffffff;
+      border: 1px solid #e5e2e1;
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.4s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-post:hover {
+      border-color: #006554;
+      box-shadow: 0 15px 40px rgba(0, 101, 84, 0.1);
+      transform: translateY(-8px);
     }
 
     .blog-header {
-      margin-bottom: 60px;
-      animation: fadeInDown 0.6s ease-out;
-    }
-
-    .blog-header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .blog-header p {
-      color: #94a3b8;
-      font-size: 1.1rem;
-    }
-
-    /* ── Blog Articles Grid ── */
-    .articles-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 28px;
-      margin-bottom: 40px;
-    }
-
-    .article-card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(10px);
-      border: 1px solid #334155;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      animation: fadeInUp 0.6s ease-out;
-    }
-
-    .article-card:hover {
-      transform: translateY(-8px);
-      border-color: #667eea;
-      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
-    }
-
-    .article-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.3s ease;
-    }
-
-    .article-card:hover .article-image {
-      transform: scale(1.05);
-    }
-
-    .article-content {
-      padding: 24px;
-    }
-
-    .article-tag {
-      display: inline-block;
-      background: rgba(102, 126, 234, 0.2);
-      color: #93c5fd;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .article-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: #f1f5f9;
-    }
-
-    .article-excerpt {
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      line-height: 1.6;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 16px;
     }
 
-    .article-meta {
+    .blog-post h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #1c1b1b;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .blog-category {
+      background: #dbfff3;
+      color: #006554;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .blog-date {
+      color: #6e7a75;
+      font-size: 0.85rem;
+      margin-bottom: 18px;
+    }
+
+    .blog-post p {
+      color: #6e7a75;
+      line-height: 1.7;
+      flex-grow: 1;
+      margin-bottom: 24px;
+    }
+
+    .blog-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #64748b;
+      padding-top: 16px;
+      border-top: 1px solid #e5e2e1;
+      margin-top: auto;
+    }
+
+    .blog-author {
+      color: #6e7a75;
       font-size: 0.85rem;
     }
 
     .read-more {
-      color: #667eea;
+      color: #006554;
       font-weight: 600;
       text-decoration: none;
-      transition: color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
     }
 
     .read-more:hover {
-      color: #764ba2;
+      gap: 10px;
+      color: #0c806b;
     }
 
-    /* ── Animations ── */
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 60px;
+      flex-wrap: wrap;
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .pagination a,
+    .pagination span {
+      padding: 12px 18px;
+      border: 1px solid #e5e2e1;
+      border-radius: 12px;
+      color: #6e7a75;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
 
-    /* ── Responsive ── */
+    .pagination a:hover {
+      border-color: #006554;
+      color: #006554;
+    }
+
+    .pagination .active {
+      background: #006554;
+      color: white;
+      border-color: #006554;
+    }
+
     @media (max-width: 768px) {
-      header {
-        padding: 12px 16px;
-      }
-
-      .header-content {
+      .navbar {
+        padding: 16px 20px;
+        flex-direction: column;
         gap: 16px;
-        flex-wrap: wrap;
       }
-
-      nav {
-        display: none;
+      .nav-links {
+        gap: 20px;
       }
-
-      main {
-        padding: 40px 16px;
-      }
-
-      .blog-header h1 {
-        font-size: 1.8rem;
-      }
-
-      .articles-grid {
+      .blog-posts {
         grid-template-columns: 1fr;
       }
     }
@@ -250,112 +261,129 @@
 </head>
 <body>
 
-<header>
-  <div class="header-content">
-    <a class="logo" onclick="window.location.href='/accueil'">Blog</a>
-    <nav>
-      <a onclick="window.location.href='/accueil'">Accueil</a>
-      <a href="#securite">Sécurité</a>
-      <a href="#conseils">Conseils</a>
-      <a href="#actualites">Actualités</a>
-    </nav>
-    <button class="btn-back" onclick="window.location.href='/accueil'">← Retour</button>
-  </div>
-</header>
+  <body>
 
-<main>
-  <div class="blog-header">
-    <h1>Blog de Sécurité</h1>
-    <p>Actualités, conseils et bonnes pratiques en authentification sécurisée</p>
+  <!-- Arrière-plan animé -->
+  <div class="background">
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
   </div>
 
-  <div class="articles-grid">
-    <!-- Article 1 -->
-    <div class="article-card" onclick="alert('Article: L\'Authentification Multi-Facteur, votre meilleur allié contre l\'usurpation d\'identité')">
-      <img src="https://picsum.photos/400/200?random=1" alt="Sécurité" class="article-image">
-      <div class="article-content">
-        <span class="article-tag">Sécurité</span>
-        <h3 class="article-title">L'Authentification Multi-Facteur, votre meilleur allié</h3>
-        <p class="article-excerpt">Découvrez comment l'authentification multi-facteur protège vos comptes contre les usurpations d'identité et autres menaces en ligne.</p>
-        <div class="article-meta">
-          <span>25 mars 2026</span>
-          <a class="read-more" href="#">Lire →</a>
+  <!-- Navigation -->
+<nav class="navbar">
+  <a href="/accueil" class="logo">
+    Smart Application
+  </a>
+  <ul class="nav-links">
+    <li><a href="/accueil" class="active">Accueil</a></li>
+    <li><a href="/blog">Blog</a></li>
+    <li><a href="/logs">Journal</a></li>
+  </ul>
+  
+  <button class="btn-logout" onclick="logout()">Déconnexion</button>
+</nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h1>Articles & Actualités</h1>
+      <p>Découvrez les derniers articles sur la sécurité, l’authentification multi-facteurs et les bonnes pratiques numériques.</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Rechercher un article..." />
+    </div>
+
+    <!-- Blog Posts -->
+    <div class="blog-posts" id="blogPosts">
+      <!-- Post 1 -->
+      <div class="blog-post">
+        <div class="blog-header">
+          <h3> Sécurité et Authentification Multi-Facteurs</h3>
+          <span class="blog-category">Sécurité</span>
+        </div>
+        <div class="blog-date">27 Mars 2026 • 5 min de lecture</div>
+        <p>Découvrez les meilleures pratiques pour sécuriser votre compte avec l’authentification multi-facteurs avancée. Protégez efficacement vos données contre les accès non autorisés.</p>
+        <div class="blog-footer">
+          <span class="blog-author">Par Admin</span>
+          <a href="#" class="read-more">Lire la suite →</a>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="blog-post">
+        <div class="blog-header">
+          <h3> Guide Complet des Applications Authenticator</h3>
+          <span class="blog-category">Tutoriel</span>
+        </div>
+        <div class="blog-date">25 Mars 2026 • 7 min de lecture</div>
+        <p>Un guide exhaustif pour configurer Google Authenticator et d’autres applications de sécurité. Améliorez votre protection avec des codes TOTP.</p>
+        <div class="blog-footer">
+          <span class="blog-author">Par Expert Sécurité</span>
+          <a href="#" class="read-more">Lire la suite →</a>
+        </div>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="blog-post">
+        <div class="blog-header">
+          <h3> Prévention des Cyberattaques Modernes</h3>
+          <span class="blog-category">Cybersécurité</span>
+        </div>
+        <div class="blog-date">23 Mars 2026 • 6 min de lecture</div>
+        <p>Comprendre les risques actuels et comment l’authentification double étape vous protège contre les tentatives de piratage sophistiquées.</p>
+        <div class="blog-footer">
+          <span class="blog-author">Par Équipe Sécurité</span>
+          <a href="#" class="read-more">Lire la suite →</a>
+        </div>
+      </div>
+
+      <!-- Post 4 -->
+      <div class="blog-post">
+        <div class="blog-header">
+          <h3>Gestion Sécurisée de vos Mots de Passe</h3>
+          <span class="blog-category">Bonnes Pratiques</span>
+        </div>
+        <div class="blog-date">20 Mars 2026 • 4 min de lecture</div>
+        <p>Les meilleures stratégies pour créer et gérer vos mots de passe de manière sécurisée avec l’authentification multi-facteurs.</p>
+        <div class="blog-footer">
+          <span class="blog-author">Par Consultant IT</span>
+          <a href="#" class="read-more">Lire la suite →</a>
         </div>
       </div>
     </div>
 
-    <!-- Article 2 -->
-    <div class="article-card" onclick="alert('Article: Google Authenticator vs SMS - Quel authentificateur choisir ?')">
-      <img src="https://picsum.photos/400/200?random=2" alt="Mobile" class="article-image">
-      <div class="article-content">
-        <span class="article-tag">Conseils</span>
-        <h3 class="article-title">Google Authenticator vs SMS : Comparaison</h3>
-        <p class="article-excerpt">Analyse détaillée des avantages et inconvénients des différentes méthodes d'authentification TOTP et SMS.</p>
-        <div class="article-meta">
-          <span>22 mars 2026</span>
-          <a class="read-more" href="#">Lire →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Article 3 -->
-    <div class="article-card" onclick="alert('Article: Les pires pratiques de sécurité des mots de passe')">
-      <img src="https://picsum.photos/400/200?random=3" alt="Risques" class="article-image">
-      <div class="article-content">
-        <span class="article-tag">Sécurité</span>
-        <h3 class="article-title">Pires pratiques de sécurité des mots de passe</h3>
-        <p class="article-excerpt">Explorez les erreurs courantes que les utilisateurs commettent avec leurs mots de passe et comment les éviter.</p>
-        <div class="article-meta">
-          <span>20 mars 2026</span>
-          <a class="read-more" href="#">Lire →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Article 4 -->
-    <div class="article-card" onclick="alert('Article: Comment créer un mot de passe robuste et mémorisable')">
-      <img src="https://picsum.photos/400/200?random=4" alt="Clés" class="article-image">
-      <div class="article-content">
-        <span class="article-tag">Conseils</span>
-        <h3 class="article-title">Créer des mots de passe robustes</h3>
-        <p class="article-excerpt">Guide pratique pour créer des mots de passe forts, sécurisés et faciles à mémoriser.</p>
-        <div class="article-meta">
-          <span>18 mars 2026</span>
-          <a class="read-more" href="#">Lire →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Article 5 -->
-    <div class="article-card" onclick="alert('Article: La biométrie : L\'avenir de l\'authentification ?')">
-      <img src="https://picsum.photos/400/200?random=5" alt="Biométrie" class="article-image">
-      <div class="article-content">
-        <span class="article-tag">Actualités</span>
-        <h3 class="article-title">La biométrie : L'avenir de l'authentification</h3>
-        <p class="article-excerpt">Explorez comment la reconnaissance faciale et empreinte digitale transforment l'authentification numérique.</p>
-        <div class="article-meta">
-          <span>15 mars 2026</span>
-          <a class="read-more" href="#">Lire →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Article 6 -->
-    <div class="article-card" onclick="alert('Article: Phishing : Comment reconnaître et éviter les arnaques')">
-      <img src="https://picsum.photos/400/200?random=6" alt="Phishing" class="article-image">
-      <div class="article-content">
-        <span class="article-tag">Sécurité</span>
-        <h3 class="article-title">Reconnaître et éviter les arnaques au Phishing</h3>
-        <p class="article-excerpt">Apprenez à identifier les tentatives de phishing et protégez-vous contre les arnaques en ligne courantes.</p>
-        <div class="article-meta">
-          <span>12 mars 2026</span>
-          <a class="read-more" href="#">Lire →</a>
-        </div>
-      </div>
+    <!-- Pagination -->
+    <div class="pagination">
+      <a href="#">← Précédent</a>
+      <span class="active">1</span>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">Suivant →</a>
     </div>
   </div>
 
-</main>
+  <script>
+    function logout() {
+      if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+        window.location.href = '/logout';
+      }
+    }
+
+    // Fonctionnalité de recherche
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+      const search = e.target.value.toLowerCase();
+      const posts = document.querySelectorAll('.blog-post');
+      
+      posts.forEach(post => {
+        const text = post.textContent.toLowerCase();
+        post.style.display = text.includes(search) ? 'flex' : 'none';
+      });
+    });
+  </script>
 
 </body>
+
 </html>
